@@ -1,0 +1,10 @@
+{
+  "name": "TakaGuchhi Money Tracker",
+  "short_name": "TakaGuchhi",
+  "description": "সহজে আয়-খরচ লিখে রাখুন ও মাসের হিসাব দেখুন।",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f2f6f4",
+  "theme_color": "#087c60",
+  "icons": [{"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]
+}

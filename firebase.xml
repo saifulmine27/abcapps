@@ -1,0 +1,4 @@
+<resources>
+    <!-- Firebase Console → Authentication → Sign-in method → Google → Web SDK configuration → Web client ID -->
+    <string name="web_client_id" translatable="false">751320307428-qs69iik1lngqqu05etqmh1j53cv2s9sr.apps.googleusercontent.com</string>
+</resources>

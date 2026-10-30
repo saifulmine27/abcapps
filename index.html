@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="bn">
+<head>
+  <script>try{if(localStorage.getItem('takaguchhi-lock-v1'))document.documentElement.classList.add('app-locked')}catch(e){}</script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#087c60">
+  <meta name="description" content="টাকাগুছি — আয়-খরচ সহজে লিখে রাখুন।">
+  <title>TakaGuchhi — Money Tracker</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg?v=9" type="image/svg+xml" sizes="any">
+  <link rel="stylesheet" href="style.css?v=20">
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <svg class="brand-mark" viewBox="0 0 128 128" role="img" aria-label="টাকাগুছি লোগো" width="46" height="46">
+          <defs><linearGradient id="logoBg" x1="10" y1="8" x2="118" y2="122" gradientUnits="userSpaceOnUse"><stop class="logo-bg-start" offset="0"/><stop class="logo-bg-end" offset="1"/></linearGradient><linearGradient id="logoCoin" x1="77" y1="22" x2="111" y2="58" gradientUnits="userSpaceOnUse"><stop class="logo-coin-start" offset="0"/><stop class="logo-coin-end" offset="1"/></linearGradient><filter id="logoShadow" x="16" y="20" width="100" height="98" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feDropShadow dx="0" dy="5" stdDeviation="4" flood-color="#003c32" flood-opacity=".24"/></filter></defs>
+          <rect width="128" height="128" rx="38" fill="url(#logoBg)"/>
+          <path d="M19 38.5A8.5 8.5 0 0 1 27.5 30H82v70H27.5a8.5 8.5 0 0 1-8.5-8.5z" fill="#fff" filter="url(#logoShadow)"/>
+          <path d="M28 43h42M28 56h31M28 69h37" class="logo-lines" fill="none" stroke-width="6" stroke-linecap="round"/>
+          <path d="M19 83h63v9a8 8 0 0 1-8 8H27a8 8 0 0 1-8-8z" class="logo-page"/>
+          <circle cx="94" cy="42" r="25" class="logo-halo"/><circle cx="91" cy="38" r="24" fill="url(#logoCoin)" stroke="#fff" stroke-width="4"/>
+          <text x="91" y="47" text-anchor="middle" class="logo-symbol" font-family="system-ui,'Noto Sans Bengali',sans-serif" font-size="27" font-weight="800">৳</text><circle cx="100" cy="94" r="5" class="logo-sparkle"/>
+        </svg>
+        <div><h1>TakaGuchhi</h1><p id="tagline">প্রতিদিনের হিসাব, এক জায়গায়</p></div>
+      </div>
+      <div class="header-actions"><button class="small-button settings-button" id="settingsButton" type="button" aria-label="সেটিংস" title="সেটিংস">⚙</button><button class="small-button" id="languageButton" type="button" aria-label="ভাষা বদলান" title="English">অ</button></div>
+    </header>
+
+    <section class="hero-card" aria-label="মাসের মোট হিসাব">
+      <div class="hero-head"><div><p class="eyebrow" id="balanceLabel">এই মাসে হাতে আছে</p><h2 id="balanceAmount">৳০</h2></div><div class="hero-icon" aria-hidden="true">৳</div></div>
+      <div class="month-switch"><button id="previousMonth" type="button" aria-label="আগের মাস">‹</button><strong id="monthLabel"></strong><button id="nextMonth" type="button" aria-label="পরের মাস">›</button></div>
+      <div class="hero-foot"><span id="monthHint">মাসের মোট ব্যালান্স</span><span id="transactionCount">০টি লেনদেন</span></div>
+    </section>
+
+    <section class="summary-grid" aria-label="আয় ও খরচ">
+      <article class="summary-card income-card"><div class="summary-top"><span class="summary-icon">↙</span><span id="incomeLabel">মোট আয়</span></div><strong id="incomeAmount">৳০</strong></article>
+      <article class="summary-card expense-card"><div class="summary-top"><span class="summary-icon">↗</span><span id="expenseLabel">মোট খরচ</span></div><strong id="expenseAmount">৳০</strong></article>
+    </section>
+
+    <section class="chart-view" id="chartView" hidden aria-label="আয়-খরচের গ্রাফ">
+      <div class="chart-card">
+        <div class="chart-select-row"><span class="sr-only" id="chartTypeLabel">লেনদেনের ধরন</span><div class="chart-type-switch" id="chartTypeSwitch" role="group" aria-labelledby="chartTypeLabel"><button class="chart-type-button active" data-chart-type="expense" type="button" aria-pressed="true"><span aria-hidden="true">↘</span><span id="chartExpenseLabel">খরচ</span></button><button class="chart-type-button" data-chart-type="income" type="button" aria-pressed="false"><span aria-hidden="true">↗</span><span id="chartIncomeLabel">আয়</span></button></div></div>
+        <div class="period-tabs" id="periodTabs"><button class="active" data-period="month" type="button" id="monthTab">মাস</button><button data-period="year" type="button" id="yearTab">বছর</button></div>
+        <div class="chart-date-row"><button id="chartPrevious" type="button" aria-label="আগের সময়">‹</button><strong id="chartDateLabel"></strong><button id="chartNext" type="button" aria-label="পরের সময়">›</button></div>
+        <div class="donut-layout"><div class="donut" id="donutChart" role="img" aria-label="খরচের বিভাগভিত্তিক গ্রাফ"><div class="donut-center"><small id="donutTotalLabel">মোট খরচ</small><strong id="donutTotal">৳০</strong></div></div><div class="chart-legend" id="chartLegend"></div></div>
+        <div class="top-list-header"><h3 id="topListTitle">শীর্ষ খরচ</h3><span id="topListSubtitle"></span></div>
+        <div class="category-breakdown" id="categoryBreakdown"></div>
+      </div>
+    </section>
+
+    <section class="records-view" id="recordsView">
+    <section class="toolbar">
+      <div class="toolbar-title"><h2 id="historyTitle">লেনদেন</h2><span id="visibleCount"></span></div>
+      <label class="search-box"><span aria-hidden="true">⌕</span><input id="searchInput" type="search" placeholder="নাম বা বিভাগ খুঁজুন" autocomplete="off"><button id="clearSearch" type="button" aria-label="সার্চ মুছুন">×</button></label>
+    </section>
+    <nav class="filters" id="filters" aria-label="লেনদেনের ধরন">
+      <button class="filter active" data-type="all" type="button">সব</button>
+      <button class="filter" data-type="expense" type="button">খরচ</button>
+      <button class="filter" data-type="income" type="button">আয়</button>
+    </nav>
+    <section class="transaction-list" id="transactionList" aria-live="polite"></section>
+    </section>
+    <p class="local-note" id="localNote">আপনার হিসাব এই ডিভাইসের browser-এ সংরক্ষিত থাকে</p>
+  </main>
+
+  <nav class="bottom-nav" aria-label="প্রধান মেনু"><button class="nav-item active" data-view="records" type="button"><span aria-hidden="true">☷</span><small id="recordsTabLabel">হিসাব</small></button><button class="nav-add" id="addButton" type="button" aria-label="লেনদেন যোগ করুন">＋</button><button class="nav-item" data-view="chart" type="button"><span aria-hidden="true">▥</span><small id="chartTabLabel">গ্রাফ</small></button></nav>
+
+  <dialog id="transactionDialog">
+    <form class="dialog-card" id="transactionForm">
+      <header class="dialog-header"><h2 id="dialogTitle">নতুন লেনদেন</h2><button class="close-button" id="closeDialog" type="button" aria-label="বন্ধ করুন">×</button></header>
+      <div class="type-switch" id="typeSwitch"><button class="type-choice active" data-value="expense" type="button" id="expenseChoice">খরচ</button><button class="type-choice" data-value="income" type="button" id="incomeChoice">আয়</button></div>
+      <div class="field"><label id="amountLabel" for="amountInput">টাকার পরিমাণ *</label><div class="amount-input"><span>৳</span><input id="amountInput" type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="০" required></div></div>
+      <div class="field"><label id="categoryLabel" for="categoryInput">বিভাগ</label><select class="sr-only" id="categoryInput" tabindex="-1" aria-hidden="true"></select><div class="category-grid" id="categoryGrid" role="group" aria-labelledby="categoryLabel"></div></div>
+      <div class="field"><label id="dateLabel" for="dateInput">তারিখ</label><input id="dateInput" type="date" required></div>
+      <div class="field"><label id="noteLabel" for="noteInput">নোট (ঐচ্ছিক)</label><textarea id="noteInput" maxlength="140" rows="2" placeholder="বাড়তি কোনো তথ্য"></textarea></div>
+      <footer class="dialog-actions"><button class="cancel-button" id="cancelDialog" type="button">বাতিল</button><button class="save-button" id="saveButton" type="submit">সেভ করুন</button></footer>
+    </form>
+  </dialog>
+  <dialog id="settingsDialog">
+    <section class="dialog-card settings-card">
+      <header class="dialog-header"><h2 id="settingsTitle">সেটিংস</h2><button class="close-button" id="closeSettings" type="button" aria-label="বন্ধ করুন">×</button></header>
+      <section class="account-section" aria-labelledby="accountTitle"><h3 id="accountTitle">অ্যাকাউন্ট ও Sync</h3><p id="accountStatus">এই ডিভাইসে হিসাব সংরক্ষিত আছে</p><p class="account-email" id="accountEmail" hidden></p><button class="google-button google-signup" id="googleSignIn" type="button"><svg class="g-logo" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg><span id="googleSignInLabel">Google দিয়ে সাইন আপ / সাইন ইন</span></button><p class="account-hint" id="accountHint">নতুন হলে Google দিয়ে অ্যাকাউন্ট খোলা হবে, আগে থেকে থাকলে সাইন ইন হবে।</p><button class="google-button signout-button" id="googleSignOut" type="button" hidden><span id="googleSignOutLabel">সাইন আউট</span></button></section>
+      <p class="settings-label" id="themeLabel">থিমের রং</p>
+      <div class="theme-options" role="group" aria-labelledby="themeLabel">
+        <button class="theme-option" data-theme-choice="emerald" type="button"><i></i><span data-bn="সবুজ" data-en="Emerald">সবুজ</span><b>✓</b></button>
+        <button class="theme-option" data-theme-choice="ocean" type="button"><i></i><span data-bn="নীল" data-en="Ocean">নীল</span><b>✓</b></button>
+        <button class="theme-option" data-theme-choice="violet" type="button"><i></i><span data-bn="বেগুনি" data-en="Violet">বেগুনি</span><b>✓</b></button>
+        <button class="theme-option" data-theme-choice="rose" type="button"><i></i><span data-bn="গোলাপি" data-en="Rose">গোলাপি</span><b>✓</b></button>
+      </div>
+      <footer class="dialog-actions"><button class="save-button" id="doneSettings" type="button">ঠিক আছে</button></footer>
+    </section>
+  </dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="firebase-config.js"></script>
+  <script src="applock.js?v=1" defer></script>
+  <script src="app.js?v=13" defer></script>
+  <script type="module" src="firebase-cloud.js?v=2"></script>
+</body>
+</html>
